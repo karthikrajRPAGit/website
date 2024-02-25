@@ -9,9 +9,11 @@ pipeline {
 	   agent { label('node1 && node2') }
 	   steps {
 		echo "Inside Build"
-		echo "Branch Name: ${branch}"
+		echo "Branch Name: ${env.GIT_BRANCH}"
+		echo "Branch Short Name: ${env.GIT_BRANCH}.split('/')[1]"
 		script {
-			if ((${branch} == "master") or (${branch} == "develop"))
+			def branch=env.GIT_BRANCH.split("/")[1]
+			if ((branch == "master") || (branch == "develop"))
 				sh "docker build -t dockthik/intel-assess-devops-proj1:${env.BUILD_NUMBER} ."
 		}
 	   }
@@ -20,7 +22,8 @@ pipeline {
            agent { label('node1 && node2') }
            steps {
                 script {
-                        if ((${branch} == "master") or (${branch} == "develop"))
+			def branch=env.GIT_BRANCH.split("/")[1]
+                        if ((branch == "master") || (branch == "develop"))
                                 sh "./run_test.sh"
                 }
            }
@@ -29,7 +32,7 @@ pipeline {
            agent { label('node2') }
            steps {
                 script {
-                        if (${branch} == "master")
+                        if (branch == "master")
 				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
                                 sh "docker tag dockthik/intel-assess-devops-proj1:${env.BUILD_NUMBER} dockthik/intel-assess-devops-proj1:latest"
 				sh "docker push dockthik/intel-assess-devops-proj1:latest"
