@@ -36,12 +36,16 @@ pipeline {
 			def branch=env.GIT_BRANCH.split("/")[1]
 			echo "${branch}"
                         if (branch == "master")
+			{
 				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
                                 sh "sudo docker tag dockthik/intel-assess-devops-proj1:${env.BUILD_NUMBER} dockthik/intel-assess-devops-proj1:latest"
 				sh "sudo docker push dockthik/intel-assess-devops-proj1:latest"
 				sh "sudo docker run -itd -p 81:80 dockthik/intel-assess-devops-proj1:latest"
+			}
 			else
+			{
 				echo "Push not from Master branch. So, Skipping this Step" 
+			}
                 }
            }
         }
