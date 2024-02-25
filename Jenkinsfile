@@ -11,7 +11,7 @@ pipeline {
 		echo "Inside Build"
 		echo "Branch Name: ${branch}"
 		script {
-			if (branch == "master" or branch == "develop")
+			if ((branch == "master") or (branch == "develop"))
 				sh "docker build -t dockthik/intel-assess-devops-proj1:${env.BUILD_NUMBER} ."
 		}
 	   }
@@ -20,7 +20,7 @@ pipeline {
            agent { label('node1 && node2') }
            steps {
                 script {
-                        if (branch == "master" or branch == "develop")
+                        if ((branch == "master") or (branch == "develop"))
                                 sh "./run_test.sh"
                 }
            }
