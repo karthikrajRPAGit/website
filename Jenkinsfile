@@ -24,7 +24,7 @@ pipeline {
                 script {
 			def branch=env.GIT_BRANCH.split("/")[1]
                         if ((branch == "master") || (branch == "develop"))
-                                sh "./run_test.sh ${env.BUILD_NUMBER}"
+                                sh "sudo sh ./run_test.sh ${env.BUILD_NUMBER}"
                 }
            }
         }
