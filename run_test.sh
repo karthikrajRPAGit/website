@@ -1,5 +1,6 @@
 #!/bin/sh
-if [ `docker images | grep intelassess | grep -c latest` -eq 1 ]
+build_number=$1
+if [ `docker images | grep intel-assess | grep -c $build_number` -eq 1 ]
 then
   exit 0;
 else
