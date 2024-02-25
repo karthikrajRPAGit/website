@@ -19,7 +19,7 @@ pipeline {
 	stage('Deploy and run containers in k8s cluster') { 
 	  steps {
 		script {
-			sh "kubectl apply -f deployment.yml"
+			sh "sudo su ubuntu; kubectl apply -f deployment.yml"
 		}
 	}
      }
