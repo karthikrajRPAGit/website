@@ -1,0 +1,27 @@
+pipeline {
+    agent { label 'K-Master' }
+    environment {
+	DOCKERHUB_CREDENTIALS = credentials('docker')
+    }
+    stages {
+        stage('Build and push Docker Image') {
+	   steps {
+		echo "Branch Name: ${env.GIT_BRANCH}"
+		script {
+			sh "sudo docker build -t dockthik/intel-assess-devops-proj2:${env.BUILD_NUMBER} ."
+			sh "sudo docker tag dockthik/intel-assess-devops-proj2:${env.BUILD_NUMBER} dockthik/intel-assess-devops-proj2:latest"
+			sh 'echo $DOCKERHUB_CREDENTIALS_PSW | sudo docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+			sh "sudo docker push dockthik/intel-assess-devops-proj2:latest"
+			
+		}
+	   }
+	}
+	stage('Deploy and run containers in k8s cluster') { 
+	  steps {
+		script {
+			sh "sudo kubectl apply -f deployment.yml"
+		}
+	}
+     }
+   }
+}
