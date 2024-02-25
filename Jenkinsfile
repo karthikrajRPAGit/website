@@ -5,9 +5,9 @@ pipeline {
     }
     stages {
         stage('Build Docker Image') {
-	   agent { label ('testandprod && prod') }
+	   agent { label 'test' }
 	   steps {
-		echo "Inside Build"
+		echo "Inside Build of Test Node"
 		echo "Branch Name: ${env.GIT_BRANCH}"
 		echo "Branch Short Name: ${env.GIT_BRANCH}.split('/')[1]"
 		script {
@@ -18,8 +18,9 @@ pipeline {
 	   }
 	}
         stage('Testing the succesful build of Docker Image') {
-           agent { label ('testandprod && prod') }
+           agent { label 'test' }
            steps {
+		echo "Inside Testing of the Test Node"
                 script {
 			def branch=env.GIT_BRANCH.split("/")[1]
                         if ((branch == "master") || (branch == "develop"))
@@ -30,7 +31,12 @@ pipeline {
         stage('pushing docker Image to the Dockerhub and run the container') {
            agent { label 'prod' }
            steps {
+		echo "Build Docker Image and Test it in prod node by default. Pushing to dockerhub and running the container is done, only if its the push from Master branch"
                 script {
+			def branch=env.GIT_BRANCH.split("/")[1]
+			if ((branch == "master") || (branch == "develop"))
+				sh "docker build -t dockthik/intel-assess-devops-proj1:${env.BUILD_NUMBER} ."
+				sh "./run_test.sh"
                         if (branch == "master")
 				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
                                 sh "docker tag dockthik/intel-assess-devops-proj1:${env.BUILD_NUMBER} dockthik/intel-assess-devops-proj1:latest"
