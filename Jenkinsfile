@@ -36,7 +36,7 @@ pipeline {
 			def branch=env.GIT_BRANCH.split("/")[1]
 			if ((branch == "master") || (branch == "develop"))
 				sh "sudo docker build -t dockthik/intel-assess-devops-proj1:${env.BUILD_NUMBER} ."
-				sh "./run_test.sh"
+				sh "sudo sh ./run_test.sh ${env.BUILD_NUMBER}"
                         if (branch == "master")
 				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
                                 sh "sudo docker tag dockthik/intel-assess-devops-proj1:${env.BUILD_NUMBER} dockthik/intel-assess-devops-proj1:latest"
