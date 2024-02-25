@@ -9,7 +9,6 @@ pipeline {
 	   steps {
 		echo "Inside Build of Test Node"
 		echo "Branch Name: ${env.GIT_BRANCH}"
-		echo "Branch Short Name: (${env.GIT_BRANCH}).split('/')[1]"
 		script {
 			def branch=env.GIT_BRANCH.split("/")[1]
 			echo "${branch}"
@@ -25,7 +24,7 @@ pipeline {
                 script {
 			def branch=env.GIT_BRANCH.split("/")[1]
                         if ((branch == "master") || (branch == "develop"))
-                                sh "./run_test.sh"
+                                sh "./run_test.sh ${env.BUILD_NUMBER}"
                 }
            }
         }
