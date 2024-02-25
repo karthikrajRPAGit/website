@@ -5,7 +5,7 @@ pipeline {
     }
     stages {
         stage('Build Docker Image') {
-	   agent { label ('node1' || 'node2') }
+	   agent { label ('testandprod' && 'prod') }
 	   steps {
 		echo "Inside Build"
 		echo "Branch Name: ${env.GIT_BRANCH}"
@@ -18,7 +18,7 @@ pipeline {
 	   }
 	}
         stage('Testing the succesful build of Docker Image') {
-           agent { label ('node1' || 'node2') }
+           agent { label ('testandprod' && 'prod') }
            steps {
                 script {
 			def branch=env.GIT_BRANCH.split("/")[1]
@@ -28,7 +28,7 @@ pipeline {
            }
         }
         stage('pushing docker Image to the Dockerhub and run the container') {
-           agent { label 'node2' }
+           agent { label 'prod' }
            steps {
                 script {
                         if (branch == "master")
