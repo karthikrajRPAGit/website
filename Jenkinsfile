@@ -9,11 +9,12 @@ pipeline {
 	   steps {
 		echo "Inside Build of Test Node"
 		echo "Branch Name: ${env.GIT_BRANCH}"
-		echo "Branch Short Name: ${env.GIT_BRANCH}.split('/')[1]"
+		echo "Branch Short Name: (${env.GIT_BRANCH}).split('/')[1]"
 		script {
 			def branch=env.GIT_BRANCH.split("/")[1]
+			echo "${branch}"
 			if ((branch == "master") || (branch == "develop"))
-				sh "docker build -t dockthik/intel-assess-devops-proj1:${env.BUILD_NUMBER} ."
+				sh "sudo docker build -t dockthik/intel-assess-devops-proj1:${env.BUILD_NUMBER} ."
 		}
 	   }
 	}
@@ -35,13 +36,13 @@ pipeline {
                 script {
 			def branch=env.GIT_BRANCH.split("/")[1]
 			if ((branch == "master") || (branch == "develop"))
-				sh "docker build -t dockthik/intel-assess-devops-proj1:${env.BUILD_NUMBER} ."
+				sh "sudo docker build -t dockthik/intel-assess-devops-proj1:${env.BUILD_NUMBER} ."
 				sh "./run_test.sh"
                         if (branch == "master")
 				sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                                sh "docker tag dockthik/intel-assess-devops-proj1:${env.BUILD_NUMBER} dockthik/intel-assess-devops-proj1:latest"
-				sh "docker push dockthik/intel-assess-devops-proj1:latest"
-				sh "docker run -itd -p 81:80 dockthik/intel-assess-devops-proj1:latest" 
+                                sh "sudo docker tag dockthik/intel-assess-devops-proj1:${env.BUILD_NUMBER} dockthik/intel-assess-devops-proj1:latest"
+				sh "sudo docker push dockthik/intel-assess-devops-proj1:latest"
+				sh "sudo docker run -itd -p 81:80 dockthik/intel-assess-devops-proj1:latest" 
                 }
            }
         }
