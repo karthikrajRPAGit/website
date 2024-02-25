@@ -1,6 +1,5 @@
 pipeline {
     agent none
-    def branch=env.GIT_BRANCH.split("/")[1]
     environment {
 	DOCKERHUB_CREDENTIALS = credentials('docker')
     }
